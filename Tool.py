@@ -34,31 +34,55 @@ def load_file(file_path_FC='./Date_FC.txt', file_path_O='./Date_O.txt'):
 def lagran(problem, x):
     i = 0
     k = 0
-    for list in problem.fc:
+    lag = []
+    for l in range(len(problem.fc)):
         k = k+1
-        for j in range(len(list)):
-            if j == x and i < 3:
+        for j in range(len(problem.fc[l])):
+            if j == x and i < len(problem.fc)-1:
                 if i < 2:
-                    list[j] = list[j] * (i+1)
+                    problem.fc[l][j] = problem.fc[l][j] * (i+1)
+                    lag.append(problem.fc[l][j])
                 i = i+1
             else:
                 if i < 3 and k < 3:
-                    list[j] = 0
-        if len(list) > 3:
-            if list[(x+1)%len(list)] == 0:
-                list[:] = copy.deepcopy([0] * len(list))
+                    problem.fc[l][j] = 0
+        if len(problem.fc[l]) > 2:
+            if problem.fc[l][(x+1)%len(problem.fc[l])] == 0:
+                problem.fc[l][:] = copy.deepcopy([0] * len(problem.fc[l]))
+                lag.append(0)
             else:
-                a = list[0]
-                list[:] = copy.deepcopy([0] * len(list))
-                list[0] = copy.deepcopy(a)
-                list[x+1] = 1
-    print(problem.fc)
+                a = problem.fc[l][0]
+                problem.fc[l][:] = copy.deepcopy([0] * len(problem.fc[l]))
+                problem.fc[l][0] = copy.deepcopy(a)
+                problem.fc[l][x+1] = 1
+                lag.insert(problem.fc[l].index(0), problem.fc[l][0])
 
+    for list in problem.ogr:
+        for i in range(len(list)):
+            if i != x:
+                list[i] = 0
+            else:
+                lag.append(list[i])
 
+    print(lag)
+    # print(problem.fc)
+    # print(problem.ogr)
+    return lag
 
 
 
 problem = load_file()
-lagran(problem, 0)
+lagran(copy.deepcopy(problem), 0)
+lagran(copy.deepcopy(problem), 1)
+for i in range(len(problem.fc[0])):
+    problem.ogr.pop( len(problem.fc[0]))
+for i in range(len(problem.ogr)*2 + len(problem.fc[0])*2):
+    for j in range(len(problem.ogr)):
+        problem.ogr[j].append(0)
+print(problem.ogr)
+for j in problem.ogr:
+    problem.b.append(j.pop(2))
+print(problem.ogr)
+print(problem.b)
 # print(problem.ogr)
 # print(problem.fc)
