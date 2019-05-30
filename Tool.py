@@ -72,6 +72,7 @@ def lagran(problem, x):
 
 
 problem = load_file()
+problem.lenfc = len(problem.fc[0])
 for j in range(len(problem.fc[0])):
     problem.lag.append( copy.deepcopy(lagran(copy.deepcopy(problem), j)) )
 #przekształcanie ograniczeń do zadania zastępczego
@@ -105,11 +106,52 @@ for i in range(len(problem.fc)-1):
         else:
             problem.lag[j].append(0)
 
+#tworzenie tablicy ze zmiennymi
+problem.zm =  copy.deepcopy(problem.ogr) + copy.deepcopy(problem.lag)
+
+#tworzenie tablicy zmiennych funkcji celu dla zadania zastępczego
+problem.cx = [0]* ( len(problem.lag[0]) - len(problem.fc[0]) )
+for i in range(len(problem.fc[0])):
+    problem.cx.append(1)
+
+#tworzenie wektora zmiennych bazowych
+for i in range( len( problem.ogr ) ):
+    problem.cb.append( [ problem.cx[i+problem.lenfc] ] )
+for i in range( problem.lenfc ):
+    problem.cb.append( [ problem.cx[len(problem.cx) -i -1] ] )
+
+#tworzenie tablicy zmiennych bazowych
+for j in problem.zm:
+    tmp = []
+    for i in range( problem.lenfc ):
+        tmp.append( j[problem.lenfc+i] )
+    problem.zb.append( tmp )
+
+for j in range( len(problem.zm) ):
+    problem.zb[len(problem.zm) - j -1].append( problem.zm[j][len(problem.zm) -1] )
+    problem.zb[len(problem.zm) - j -1].append( problem.zm[j][len(problem.zm) -2] )
+
+#tworzenie tablicy zmiennych nie bazowych
+for j in problem.zm:
+    tmp = []
+    for i in range( problem.lenfc ):
+        tmp.append( j[i] )
+    problem.znb.append( tmp )
+    # problem.znb.append( [j[0], j[1]])
+
+for j in range( len(problem.zm) ):
+    for i in range( len( problem.zm[0]) - len(problem.zb[0]) - problem.lenfc ):
+        problem.znb[j].append( problem.zm[j][ i + 4] )
+
+problem.simplex()
 
 
-for j in range(len(problem.fc[0])):
-    print(problem.lag[j])
-print(problem.ogr)
-print(problem.b)
+
+# print(problem.zm)
+# print(problem.znb)
+# print(problem.zb)
+# print(problem.cx)
+# print(problem.cb)
+# print(problem.b)
 # print(problem.ogr)
 # print(problem.fc)
