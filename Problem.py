@@ -4,5 +4,6 @@ class Problem:
         self.fc = []
         self.ogr = []
         self.b = []
+        self.lag = []
 
 

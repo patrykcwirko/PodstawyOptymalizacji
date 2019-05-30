@@ -64,7 +64,7 @@ def lagran(problem, x):
             else:
                 lag.append(list[i])
 
-    print(lag)
+    # print("tstfc")
     # print(problem.fc)
     # print(problem.ogr)
     return lag
@@ -72,16 +72,43 @@ def lagran(problem, x):
 
 
 problem = load_file()
-lagran(copy.deepcopy(problem), 0)
-lagran(copy.deepcopy(problem), 1)
+for j in range(len(problem.fc[0])):
+    problem.lag.append( copy.deepcopy(lagran(copy.deepcopy(problem), j)) )
+#przekształcanie ograniczeń do zadania zastępczego
 for i in range(len(problem.fc[0])):
     problem.ogr.pop( len(problem.fc[0]))
-for i in range(len(problem.ogr)*2 + len(problem.fc[0])*2):
+for i in range(len(problem.ogr)):
+    for j in range(len(problem.ogr)):
+        if i == j:
+            problem.ogr[j].append(1)
+        else:
+            problem.ogr[j].append(0)
+
+for i in range(len(problem.ogr) + len(problem.fc[0])*2):
     for j in range(len(problem.ogr)):
         problem.ogr[j].append(0)
-print(problem.ogr)
 for j in problem.ogr:
     problem.b.append(j.pop(2))
+
+#przekształcanie lagrange'anów do postaci dla zadania zastępczego
+for j in range(len(problem.fc[0])):
+    problem.b.append(problem.lag[j].pop(0))
+
+for j in range(len(problem.ogr)):
+    for i in range(len(problem.fc[0])):
+        problem.lag[i].insert(2, 0)
+
+for i in range(len(problem.fc)-1):
+    for j in range(len(problem.fc[0])):
+        if i == j:
+            problem.lag[j].append(1)
+        else:
+            problem.lag[j].append(0)
+
+
+
+for j in range(len(problem.fc[0])):
+    print(problem.lag[j])
 print(problem.ogr)
 print(problem.b)
 # print(problem.ogr)
