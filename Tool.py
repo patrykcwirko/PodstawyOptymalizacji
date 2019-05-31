@@ -73,6 +73,7 @@ def lagran(problem, x):
 
 problem = load_file()
 problem.lenfc = len(problem.fc[0])
+problem.lenogr = len(problem.ogr) - problem.lenfc
 for j in range(len(problem.fc[0])):
     problem.lag.append( copy.deepcopy(lagran(copy.deepcopy(problem), j)) )
 #przekształcanie ograniczeń do zadania zastępczego
@@ -142,6 +143,27 @@ for j in problem.zm:
 for j in range( len(problem.zm) ):
     for i in range( len( problem.zm[0]) - len(problem.zb[0]) - problem.lenfc ):
         problem.znb[j].append( problem.zm[j][ i + 4] )
+
+#Tworzenie tablicy pomocniczej z nazwami zmiennych
+for i in range(problem.lenfc):
+    problem.strzm.append( "x" + str(i) )
+for i in range(problem.lenogr):
+    problem.strzm.append( "xd" + str(i) )
+for i in range(problem.lenogr):
+    problem.strzm.append( "y" + str(i) )
+for i in range(problem.lenfc):
+    problem.strzm.append( "yd" + str(i) )
+for i in range(problem.lenfc):
+    problem.strzm.append( "w" + str(i) )
+
+for i in range(problem.lenfc):
+    problem.strzb.append( "x" + str(i) )
+for i in range(problem.lenfc):
+    problem.strzb.append( "w" + str(i) )
+
+print(problem.strzm)
+print(problem.strzb)
+
 
 problem.simplex()
 
