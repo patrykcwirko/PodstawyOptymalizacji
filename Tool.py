@@ -157,17 +157,32 @@ for i in range(problem.lenfc):
     problem.strzm.append( "w" + str(i) )
 
 for i in range(problem.lenfc):
-    problem.strzb.append( "x" + str(i) )
+    problem.strzb.append( "xd" + str(i) )
 for i in range(problem.lenfc):
     problem.strzb.append( "w" + str(i) )
 
 print(problem.strzm)
 print(problem.strzb)
 
-
 problem.simplex()
 
+#Poprawa tablicy pomocniczej
+problem.strzb = []
+problem.strzm = []
+for i in range(problem.lenfc):
+    problem.strzb.append( "xd" + str(i) )
+for i in range(problem.lenfc):
+    problem.strzb.append( "w" + str(i) )
 
+problem.strzm = copy.deepcopy(problem.strzb)
+for i in range(problem.lenfc):
+    problem.strzm.append( "x" + str(i) )
+for i in range(problem.lenogr):
+    problem.strzm.append( "y" + str(i) )
+for i in range(problem.lenfc):
+    problem.strzm.append( "yd" + str(i) )
+
+problem.simplex()
 
 # print(problem.zm)
 # print(problem.znb)
